@@ -1,12 +1,18 @@
 package com.tec.inmobiliariaapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
+import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -15,52 +21,112 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tec.inmobiliariaapp.databinding.ActivityMainBinding;
+import com.tec.inmobiliariaapp.ui.LoginActivity;
+import com.tec.inmobiliariaapp.ui.contratos.ContratosFragment;
+import com.tec.inmobiliariaapp.ui.inicio.InicioFragment;
+import com.tec.inmobiliariaapp.ui.inmuebles.InmueblesFragment;
+import com.tec.inmobiliariaapp.ui.inquilino.InquilinoFragment;
+import com.tec.inmobiliariaapp.ui.perfil.PerfilFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        fab = findViewById(R.id.fab);
 
-        setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .setAnchorView(R.id.fab).show();
+        // Toolbar
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        // Header con nombre del usuario
+        View headerView = navigationView.getHeaderView(0);
+        TextView tvNombre = headerView.findViewById(R.id.tvUsuarioLogueado);
+        String nombreUsuario = getIntent().getStringExtra("nombreUsuario");
+        if (nombreUsuario != null) {
+            tvNombre.setText("Usuario: " + nombreUsuario);
+        }
+
+        // Fragment inicial
+        loadFragment(new InicioFragment(), "Inicio");
+
+        // Listener del menú lateral
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            Fragment fragmentToLoad = null;
+            String title = "";
+
+            if (id == R.id.nav_inicio) {
+                fragmentToLoad = new InicioFragment();
+                title = "Inicio";
+            } else if (id == R.id.nav_perfil) {
+                fragmentToLoad = new PerfilFragment();
+                title = "Perfil";
+            } else if (id == R.id.nav_inmuebles) {
+                fragmentToLoad = new InmueblesFragment();
+                title = "Inmuebles";
+            } else if (id == R.id.nav_contratos) {
+                fragmentToLoad = new ContratosFragment();
+                title = "Contratos";
+            } else if (id == R.id.nav_inquilinos) {
+                fragmentToLoad = new InquilinoFragment();
+                title = "Inquilinos";
+            } else if (id == R.id.nav_logout) {
+                mostrarDialogoLogout();
+                drawerLayout.closeDrawers();
+                return true;
             }
+
+            if (fragmentToLoad != null) {
+                loadFragment(fragmentToLoad, title);
+            }
+
+            drawerLayout.closeDrawers();
+            return true;
         });
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
-                .setOpenableLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+
+        // FAB para agregar inmueble
+        fab.setOnClickListener(v -> {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, new InmueblesFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    private void loadFragment(Fragment fragment, String title) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+    private void mostrarDialogoLogout() {
+        new AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Deseas salir de la aplicación?")
+                .setPositiveButton("Sí", (dialog, which) -> {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 }

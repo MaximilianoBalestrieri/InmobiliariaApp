@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.tec.inmobiliariaapp.R;
 import com.tec.inmobiliariaapp.ui.contratos.ContratosFragment;
@@ -52,13 +53,22 @@ public class MainActivity extends AppCompatActivity {
         // Fragment inicial
         loadFragment(new InicioFragment(), "Inicio");
 
+        // FloatingActionButton
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            // Aquí podés abrir el fragment para agregar inmueble
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new InmueblesFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         // Listener del menú lateral
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             Fragment fragmentToLoad = null;
             String title = "";
 
-            // Usamos if-else para evitar problemas de switch con R.id
             if (id == R.id.nav_inicio) {
                 fragmentToLoad = new InicioFragment();
                 title = "Inicio";
@@ -75,10 +85,9 @@ public class MainActivity extends AppCompatActivity {
                 fragmentToLoad = new InquilinoFragment();
                 title = "Inquilinos";
             } else if (id == R.id.nav_logout) {
-                // Solo mostramos diálogo, no fragment
                 mostrarDialogoLogout();
                 drawerLayout.closeDrawers();
-                return true; // terminamos aquí
+                return true;
             }
 
             if (fragmentToLoad != null) {

@@ -1,3 +1,5 @@
+import jdk.jfr.events.ActiveRecordingEvent.enabled
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -16,6 +18,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -32,6 +35,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 }
 
 dependencies {
@@ -49,21 +53,21 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    implementation ("androidx.appcompat:appcompat:1.6.1")
-    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation ("com.google.android.material:material:1.9.0")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel:2.6.1")
-    implementation ("androidx.lifecycle:lifecycle-livedata:2.6.1")
-    implementation ("androidx.lifecycle:lifecycle-runtime:2.6.1")
-    implementation ("androidx.navigation:navigation-fragment:2.5.3")
-    implementation ("androidx.navigation:navigation-ui:2.5.3")
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
-    implementation ("com.github.bumptech.glide:glide:4.15.1")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
-    implementation ("androidx.security:security-crypto:1.1.0-alpha03") // EncryptedSharedPreferences
-    implementation ("com.google.code.gson:gson:2.10.1")
+    implementation ("androidx.appcompat:appcompat:1.7.1")
+    implementation ("androidx.constraintlayout:constraintlayout:2.2.1")
+    implementation ("com.google.android.material:material:1.13.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel:2.9.4")
+    implementation ("androidx.lifecycle:lifecycle-livedata:2.9.4")
+    implementation ("androidx.lifecycle:lifecycle-runtime:2.9.4")
+    implementation ("androidx.navigation:navigation-fragment:2.9.5")
+    implementation ("androidx.navigation:navigation-ui:2.9.5")
+    implementation ("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation ("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation ("com.squareup.okhttp3:okhttp:5.1.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:5.1.0")
+    implementation ("com.github.bumptech.glide:glide:5.0.5")
+    annotationProcessor ("com.github.bumptech.glide:compiler:5.0.5")
+    implementation ("androidx.security:security-crypto:1.1.0") // EncryptedSharedPreferences
+    implementation ("com.google.code.gson:gson:2.13.2")
 
 }
