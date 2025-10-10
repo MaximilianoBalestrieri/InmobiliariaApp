@@ -1,7 +1,5 @@
 package com.tec.inmobiliariaapp.model;
 
-
-
 import com.google.gson.annotations.SerializedName;
 
 public class UsuarioResponse {
@@ -9,10 +7,36 @@ public class UsuarioResponse {
     private String token;
 
     private String mensaje;
-    private Usuario usuario; // opcional según tu API
+    private Usuario usuario;
+    public UsuarioResponse() {
+    }
+    public UsuarioResponse(String token) {
+        this.token = token;
+    }
 
-    public String getToken() { return token; }
-    public String getMensaje() { return mensaje; }
-    public Usuario getUsuario() { return usuario; }
+    public String getToken() {
+        return token;
+    }
+
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    // Setters (Necesarios para que el código sea completo y flexible)
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 }
 

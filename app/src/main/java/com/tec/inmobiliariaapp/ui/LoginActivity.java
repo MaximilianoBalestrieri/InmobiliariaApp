@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.Observer;
@@ -20,7 +19,8 @@ import com.tec.inmobiliariaapp.model.UsuarioResponse;
 import com.tec.inmobiliariaapp.viewModel.LoginViewModel;
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText etUsuario, etPassword;
+    // 💡 CORRECCIÓN DE CLARIDAD: Renombramos la variable a etEmail
+    private EditText etEmail, etPassword;
     private Button btnLogin;
     private LoginViewModel loginViewModel;
 
@@ -29,7 +29,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        etUsuario = findViewById(R.id.etEmail);
+        // 💡 CORRECCIÓN DE CLARIDAD: Asignamos a la variable etEmail
+        etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
 
@@ -43,18 +44,21 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel.getLoginResponse().observe(this, new Observer<UsuarioResponse>() {
             @Override
             public void onChanged(UsuarioResponse response) {
-                if (response != null && response.getToken() != null) {
-                    guardarToken(response);
+                // La Activity solo verifica si se recibió ALGO exitoso.
+                // El token ya está guardado en el Repository.
+                if (response != null) {
+                    // 💡 No necesitamos llamar a guardarToken(response)
                     Toast.makeText(LoginActivity.this, "¡Login exitoso!", Toast.LENGTH_SHORT).show();
                     irAMain();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                    // 💡 Mantenemos el mensaje de error actualizado
+                    Toast.makeText(LoginActivity.this, "Error de autenticación o token no recibido.", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
         btnLogin.setOnClickListener(v -> {
-            String user = etUsuario.getText().toString().trim();
+            String user = etEmail.getText().toString().trim();
             String pass = etPassword.getText().toString().trim();
 
             if (user.isEmpty() || pass.isEmpty()) {

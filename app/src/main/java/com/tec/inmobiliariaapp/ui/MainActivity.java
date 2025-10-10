@@ -1,6 +1,8 @@
 package com.tec.inmobiliariaapp.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -45,9 +47,15 @@ public class MainActivity extends AppCompatActivity {
         // Header con nombre del usuario
         View headerView = navigationView.getHeaderView(0);
         TextView tvNombre = headerView.findViewById(R.id.tvUsuarioLogueado);
-        String nombreUsuario = getIntent().getStringExtra("nombreUsuario");
-        if (nombreUsuario != null) {
-            tvNombre.setText("Usuario: " + nombreUsuario);
+        // 1. Leer SharedPreferences
+        SharedPreferences prefs = this.getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+
+        // 2. Obtener el email guardado con la clave "email"
+        String emailUsuario = prefs.getString("email", "Usuario Invitado");
+
+        // 3. Actualizar la vista
+        if (tvNombre != null) {
+            tvNombre.setText("Usuario: " + emailUsuario);
         }
 
         // Fragment inicial

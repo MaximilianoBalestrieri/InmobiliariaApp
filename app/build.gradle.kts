@@ -69,5 +69,5 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:5.0.5")
     implementation ("androidx.security:security-crypto:1.1.0") // EncryptedSharedPreferences
     implementation ("com.google.code.gson:gson:2.13.2")
-
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 }
