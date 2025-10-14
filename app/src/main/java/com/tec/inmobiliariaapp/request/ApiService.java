@@ -21,15 +21,7 @@ import retrofit2.http.PUT;
 // **********************************************
 public interface ApiService {
 
-    // 1. Método para el LOGIN (JSON Body)
-    // El endpoint de tu API parece ser para Propietarios, vamos a usar el que espera un Body
-    // si usamos UsuarioRequest.
-
-    //@FormUrlEncoded
-    //@POST("api/Propietarios/login")
-    //Call<String> login(@Field("Usuario") String usuario, @Field("Clave") String clave);
-
-    // ESTO GENERA JSON Body (Content-Type: application/json)
+   
     @FormUrlEncoded
     @POST("api/Propietarios/Login")
     Call<String> login(
