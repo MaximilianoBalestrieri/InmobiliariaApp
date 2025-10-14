@@ -22,35 +22,70 @@ import com.tec.inmobiliariaapp.model.Inmueble;
 
 import java.io.IOException;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider; // 💡 Importante para MVVM
+
+import com.tec.inmobiliariaapp.R;
+import com.tec.inmobiliariaapp.model.Inmueble;
+
+import java.io.IOException;
+
 public class AgregarInmuebleFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private ImageView ivFoto;
     private EditText etDireccion, etPrecio, etAmbientes, etUso, etTipo;
+    private Button btnSeleccionarFoto, btnGuardar;
     private Uri imagenSeleccionadaUri;
 
-    @Nullable
+    // 💡 Declaración del ViewModel
+    private AgregarInmuebleViewModel viewModel;
+
+    public AgregarInmuebleFragment() {
+        super(R.layout.fragment_agregar_inmueble);
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_agregar_inmueble, container, false);
 
+        // 1. Inicializar ViewModel
+        viewModel = new ViewModelProvider(this).get(AgregarInmuebleViewModel.class);
+
+        // 2. Enlazar Vistas
         ivFoto = view.findViewById(R.id.ivFotoInmueble);
         etDireccion = view.findViewById(R.id.etDireccion);
         etPrecio = view.findViewById(R.id.etPrecio);
         etAmbientes = view.findViewById(R.id.etAmbientes);
         etUso = view.findViewById(R.id.etUso);
         etTipo = view.findViewById(R.id.etTipo);
-        Button btnSeleccionarFoto = view.findViewById(R.id.btnSeleccionarFoto);
-        Button btnGuardar = view.findViewById(R.id.btnGuardarInmueble);
+        btnSeleccionarFoto = view.findViewById(R.id.btnSeleccionarFoto);
+        btnGuardar = view.findViewById(R.id.btnGuardarInmueble);
 
-        // 📷 Seleccionar imagen
+        // 3. Observar el resultado del guardado desde el ViewModel
+        viewModel.getResultadoGuardado().observe(getViewLifecycleOwner(), exito -> {
+            if (exito != null) {
+                if (exito) {
+                    Toast.makeText(getContext(), "✅ Inmueble agregado con éxito.", Toast.LENGTH_LONG).show();
+                    // Vuelve al fragment anterior (InmueblesFragment)
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                } else {
+                    Toast.makeText(getContext(), "❌ Error al guardar el inmueble. Intente de nuevo.", Toast.LENGTH_LONG).show();
+                }
+                // Habilitar el botón si hubo error para que puedan reintentar
+                btnGuardar.setEnabled(true);
+            }
+        });
+
+        // 4. Listeners
         btnSeleccionarFoto.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
 
-        // 💾 Guardar inmueble
         btnGuardar.setOnClickListener(v -> guardarInmueble());
 
         return view;
@@ -65,6 +100,7 @@ public class AgregarInmuebleFragment extends Fragment {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imagenSeleccionadaUri);
                 ivFoto.setImageBitmap(bitmap);
             } catch (IOException e) {
+                Toast.makeText(getContext(), "Error al cargar la imagen.", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
@@ -77,31 +113,35 @@ public class AgregarInmuebleFragment extends Fragment {
         String uso = etUso.getText().toString().trim();
         String tipo = etTipo.getText().toString().trim();
 
-        if (direccion.isEmpty() || precioStr.isEmpty() || ambientesStr.isEmpty() || uso.isEmpty() || tipo.isEmpty()) {
-            Toast.makeText(getContext(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
+        if (direccion.isEmpty() || precioStr.isEmpty() || ambientesStr.isEmpty() || uso.isEmpty() || tipo.isEmpty() || imagenSeleccionadaUri == null) {
+            Toast.makeText(getContext(), "Por favor, complete todos los campos y seleccione una foto.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        double precio = Double.parseDouble(precioStr);
+        double valor = Double.parseDouble(precioStr);
         int ambientes = Integer.parseInt(ambientesStr);
 
-        // 🔹 Creamos el nuevo inmueble (disponible = false por defecto)
-        Inmueble nuevoInmueble = new Inmueble(
-                0, // id temporal
-                ambientes,
-                direccion,
-                precio,
-                uso,
-                false, // 🔒 Deshabilitado por defecto
-                tipo,
-                R.drawable.baseline_home_24 // imagen por defecto si no se selecciona ninguna
-        );
+        // Deshabilitar botón para evitar envíos duplicados
+        btnGuardar.setEnabled(false);
+        Toast.makeText(getContext(), "Enviando inmueble...", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(getContext(), "Inmueble agregado (por defecto no disponible)", Toast.LENGTH_LONG).show();
+        // 🔹 CORRECCIÓN: Crear el objeto Inmueble usando el constructor vacío y setters
+        Inmueble nuevoInmueble = new Inmueble();
 
-        // Podés agregarlo a tu lista o enviar al servidor acá
+        // Asignamos los valores que el usuario proporcionó
+        nuevoInmueble.setDireccion(direccion);
+        nuevoInmueble.setAmbientes(ambientes);
+        nuevoInmueble.setValor(valor);
+        nuevoInmueble.setUso(uso);
+        nuevoInmueble.setTipo(tipo);
 
-        // Vuelve al fragment anterior
-        requireActivity().getSupportFragmentManager().popBackStack();
+        // Valores predeterminados/backend (se asume disponible al crear)
+        nuevoInmueble.setDisponible(true);
+        // El campo 'imagen' en el modelo es la URL final, pero aquí usamos el URI para el ViewModel
+        nuevoInmueble.setImagen(imagenSeleccionadaUri.toString());
+
+        // 💡 Llamada al ViewModel para iniciar el proceso de guardado (API)
+        // El ViewModel debería encargarse de obtener el Path real del URI y subir la imagen.
+        viewModel.guardarInmueble(nuevoInmueble, imagenSeleccionadaUri);
     }
 }
