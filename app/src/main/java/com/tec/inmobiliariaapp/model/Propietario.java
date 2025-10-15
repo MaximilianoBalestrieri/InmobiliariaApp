@@ -10,19 +10,19 @@ public class Propietario implements Serializable {
     private String dni;
     private String telefono;
     private String email;
-    private String contrasena;
+    private String clave;
 
     public Propietario() {
     }
 
-    public Propietario(int idPropietario, String nombre, String apellido, String dni, String telefono, String email, String contrasena) {
+    public Propietario(int idPropietario, String nombre, String apellido, String dni, String telefono, String email, String clave) {
         this.idPropietario = idPropietario;
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
         this.telefono = telefono;
         this.email = email;
-        this.contrasena = contrasena;
+        this.clave = clave;
     }
 
     public int getIdPropietario() {
@@ -74,11 +74,11 @@ public class Propietario implements Serializable {
     }
 
     public String getClave() {
-        return contrasena;
+        return clave;
     }
 
     public void setClave(String clave) {
-        this.contrasena = clave;
+        this.clave = clave;
     }
 
 }

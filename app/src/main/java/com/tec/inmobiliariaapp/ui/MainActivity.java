@@ -18,10 +18,10 @@ import com.google.android.material.navigation.NavigationView;
 import com.tec.inmobiliariaapp.R;
 import com.tec.inmobiliariaapp.ui.contratos.ContratosFragment;
 import com.tec.inmobiliariaapp.ui.inicio.InicioFragment;
-//import com.tec.inmobiliariaapp.ui.inmuebles.InmueblesFragment;
+import com.tec.inmobiliariaapp.ui.inmuebles.InmueblesFragment;
 import com.tec.inmobiliariaapp.ui.inquilino.InquilinoFragment;
 import com.tec.inmobiliariaapp.ui.login.LoginActivity;
-//import com.tec.inmobiliariaapp.ui.perfil.PerfilFragment;
+import com.tec.inmobiliariaapp.ui.perfil.PerfilFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -82,10 +82,10 @@ public class MainActivity extends AppCompatActivity {
                 fragmentToLoad = new InicioFragment();
                 title = "Inicio";
             } else if (id == R.id.nav_perfil) {
-               // fragmentToLoad = new PerfilFragment();
+                fragmentToLoad = new PerfilFragment();
                 title = "Perfil";
             } else if (id == R.id.nav_inmuebles) {
-               // fragmentToLoad = new InmueblesFragment();
+               fragmentToLoad = new InmueblesFragment();
                 title = "Inmuebles";
             } else if (id == R.id.nav_contratos) {
                 fragmentToLoad = new ContratosFragment();

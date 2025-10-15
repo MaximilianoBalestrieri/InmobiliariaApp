@@ -1,5 +1,8 @@
 package com.tec.inmobiliariaapp.request;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tec.inmobiliariaapp.model.Inmueble;
@@ -50,7 +53,7 @@ public class ApiClient {
         );
 
         @GET("api/Propietarios")
-        Call<Propietario> getPropietario(@Header("Authorization") String token);
+        Call<Propietario> obtenerPerfil(@Header("Authorization") String token);
 
         @GET("api/Inmuebles")
         Call<List<Inmueble>> obtenerInmuebles(@Header("Authorization") String token);
@@ -73,7 +76,19 @@ public class ApiClient {
         );
     }
 
+    public static void guardarToken(Context context, String token) {
+        SharedPreferences sp = context.getSharedPreferences("token.xml", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("token", token);
+        editor.apply();
+    }
 
+// no usages
+
+    public static String leerToken(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("token.xml", Context.MODE_PRIVATE);
+        return sp.getString("token",  null);
+    }
 
 
     public static Retrofit getRetrofitInstance() {
