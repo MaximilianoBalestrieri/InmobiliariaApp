@@ -1,14 +1,80 @@
 package com.tec.inmobiliariaapp.request;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.tec.inmobiliariaapp.model.Inmueble;
+import com.tec.inmobiliariaapp.model.Propietario;
+
+import java.util.List;
+
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Part;
 
 public class ApiClient {
     private static final String BASE_URL = "https://inmobiliariaulp-amb5hwfqaraweyga.canadacentral-01.azurewebsites.net/";
     private static Retrofit retrofit;
+
+    public static InmoServicio getInmoServicio(){
+        Gson gson= new GsonBuilder().setLenient().create();
+        Retrofit retrofit= new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        return retrofit.create(InmoServicio.class);
+
+    }
+
+    public interface InmoServicio {
+
+
+        @FormUrlEncoded
+        @POST("api/Propietarios/Login")
+        Call<String> loginForm(
+                @Field("Usuario") String usuario, // Mayúsculas
+                @Field("Clave") String clave      // Mayúsculas
+        );
+
+        @GET("api/Propietarios")
+        Call<Propietario> getPropietario(@Header("Authorization") String token);
+
+        @GET("api/Inmuebles")
+        Call<List<Inmueble>> obtenerInmuebles(@Header("Authorization") String token);
+
+        @PUT("api/Propietarios/actualizar")
+        Call<Propietario> actualizarPropietario(@Header("Authorization") String token, @Body Propietario propietario);
+
+
+        @Multipart
+        @POST("api/Inmuebles/crear") //
+        Call<Inmueble> crearInmueble(
+                @Header("Authorization") String token,
+                @Part MultipartBody.Part imagenFile, // La imagen binaria
+                @Part("direccion") RequestBody direccion,
+                @Part("valor") RequestBody valor,
+                @Part("ambientes") RequestBody ambientes,
+                @Part("uso") RequestBody uso,
+                @Part("tipo") RequestBody tipo
+                // Agrega aquí todas las demás propiedades del inmueble que debas enviar
+        );
+    }
+
+
+
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
