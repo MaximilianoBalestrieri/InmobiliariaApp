@@ -19,6 +19,24 @@ public class Inmueble implements Serializable {
     private boolean tieneContratoVigente;
     private Contrato contrato;
 
+    public Inmueble(int idInmueble, String direccion, String uso, String tipo, int ambientes, int superficie, double latitud, double valor, String imagen, Boolean disponible, double longitud, int idPropietario, Propietario duenio, boolean tieneContratoVigente, Contrato contrato) {
+        this.idInmueble = idInmueble;
+        this.direccion = direccion;
+        this.uso = uso;
+        this.tipo = tipo;
+        this.ambientes = ambientes;
+        this.superficie = superficie;
+        this.latitud = latitud;
+        this.valor = valor;
+        this.imagen = imagen;
+        this.disponible = disponible;
+        this.longitud = longitud;
+        this.idPropietario = idPropietario;
+        this.duenio = duenio;
+        this.tieneContratoVigente = tieneContratoVigente;
+        this.contrato = contrato;
+    }
+
     // Getters y setters
     public int getIdInmueble() { return idInmueble; }
     public void setIdInmueble(int idInmueble) { this.idInmueble = idInmueble; }

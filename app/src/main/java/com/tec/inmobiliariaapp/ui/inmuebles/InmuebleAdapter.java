@@ -1,4 +1,4 @@
-package com.tec.inmobiliariaapp;
+package com.tec.inmobiliariaapp.ui.inmuebles;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-// Si usas Glide/Picasso, recuerda importar la librería aquí
-// import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide;
 import com.tec.inmobiliariaapp.R;
 import com.tec.inmobiliariaapp.model.Inmueble;
 import java.util.List;
@@ -42,7 +41,7 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Inmueble inmueble = inmuebles.get(position);
 
-        // Formateador de moneda para Argentina/pesos (usa el valor del modelo: getValor)
+        // Formateador de moneda para Argentina/pesos
         NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("es", "AR"));
 
         // 1. Asignar datos principales
@@ -66,15 +65,17 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
         // 4. Lógica de Imagen (Usando URL de la API)
         String urlImagen = inmueble.getImagen();
         if (urlImagen != null && !urlImagen.isEmpty()) {
-            // 🚨 Reemplaza el comentario por tu implementación de Glide/Picasso
-             /*
-             Glide.with(holder.ivInmueble.getContext())
-                 .load(urlImagen)
-                 .placeholder(R.drawable.ic_launcher_background)
-                 .into(holder.ivInmueble);
-             */
-            // Temporal: usa un drawable local hasta tener Glide configurado
-            holder.ivInmueble.setImageResource(R.drawable.ic_launcher_background);
+            // URL Base de la API + path de la imagen
+            String fullUrl = "https://inmobiliariaulp-amb5hwfqaraweyga.canadacentral-01.azurewebsites.net" + urlImagen;
+
+            Glide.with(holder.ivInmueble.getContext())
+                    .load(fullUrl)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .into(holder.ivInmueble);
+
+            // IMPORTANTE: Se eliminó la línea "holder.ivInmueble.setImageResource(R.drawable.ic_launcher_background);"
+            // que sobrescribía el resultado de Glide.
+
         } else {
             holder.ivInmueble.setImageResource(R.drawable.ic_launcher_background);
         }
