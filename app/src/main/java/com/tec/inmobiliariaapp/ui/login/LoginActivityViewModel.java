@@ -52,6 +52,14 @@ public class LoginActivityViewModel extends AndroidViewModel {
                                  String token= response.body();
                                  ApiClient.guardarToken(getApplication(),token);
                                 Log.d("token", token);
+
+                                 //  Guardar el email del usuario logueado
+                                 getApplication()
+                                         .getSharedPreferences("MisPreferencias", Application.MODE_PRIVATE)
+                                         .edit()
+                                         .putString("email", usuario) // el "usuario" que ingresó
+                                         .apply();
+
                                  Intent intent = new Intent(getApplication(), MainActivity.class);
                                  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                  getApplication().startActivity(intent);

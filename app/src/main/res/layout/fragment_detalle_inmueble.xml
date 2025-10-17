@@ -19,6 +19,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Imagen -->
             <ImageView
                 android:id="@+id/ivInmueble"
                 android:layout_width="match_parent"
@@ -27,61 +28,165 @@
                 android:contentDescription="Imagen del inmueble"
                 android:src="@drawable/ic_launcher_background" />
 
-            <TextView
-                android:id="@+id/tvDireccion"
+            <!-- Primera fila: Dirección -->
+            <EditText
+                android:id="@+id/etDireccion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dirección:"
-                android:textStyle="bold"
+                android:hint="Dirección"
                 android:textSize="18sp"
-                android:paddingTop="8dp" />
+                android:textStyle="bold"
+                android:paddingTop="8dp"
+                android:enabled="false"/>
 
-            <TextView
-                android:id="@+id/tvPrecio"
+            <!-- Segunda fila: Precio + Ambientes -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Precio:"
-                android:textSize="16sp"
-                android:paddingTop="4dp" />
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:paddingTop="4dp">
 
-            <TextView
-                android:id="@+id/tvAmbientes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Ambientes:"
-                android:textSize="16sp"
-                android:paddingTop="4dp" />
+                <EditText
+                    android:id="@+id/etPrecio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Precio"
+                    android:inputType="numberDecimal"
+                    android:paddingEnd="4dp"
+                    android:enabled="false"/>
 
-            <TextView
-                android:id="@+id/tvUso"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Uso:"
-                android:textSize="16sp"
-                android:paddingTop="4dp" />
+                <EditText
+                    android:id="@+id/etAmbientes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Ambientes"
+                    android:inputType="number"
+                    android:paddingStart="4dp"
+                    android:enabled="false"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvTipo"
+            <!-- Tercera fila: Superficie + Uso -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tipo:"
-                android:textSize="16sp"
-                android:paddingTop="4dp" />
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:paddingTop="4dp">
 
-            <TextView
-                android:id="@+id/tvDisponible"
+                <EditText
+                    android:id="@+id/etSuperficie"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Superficie"
+                    android:inputType="numberDecimal"
+                    android:paddingEnd="4dp"
+                    android:enabled="false"/>
+
+                <EditText
+                    android:id="@+id/etUso"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Uso"
+                    android:paddingStart="4dp"
+                    android:enabled="false"/>
+            </LinearLayout>
+
+            <!-- Cuarta fila: Tipo + Disponible -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Disponible:"
-                android:textSize="16sp"
-                android:paddingTop="4dp" />
-            <TextView
-                android:id="@+id/tvSuperficie"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:paddingTop="4dp">
+
+                <EditText
+                    android:id="@+id/etTipo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Tipo"
+                    android:paddingEnd="4dp"
+                    android:enabled="false"/>
+
+                <CheckBox
+                    android:id="@+id/cbDisponible"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Disponible"
+                    android:paddingStart="4dp"
+                    android:enabled="false"/>
+            </LinearLayout>
+
+            <!-- Quinta fila: Latitud + Longitud -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Superficie: N/A"
-                android:textSize="16sp"
-                android:paddingTop="4dp"/>
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:paddingTop="4dp">
+
+                <EditText
+                    android:id="@+id/etLatitud"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Latitud"
+                    android:inputType="numberDecimal"
+                    android:paddingEnd="4dp"
+                    android:enabled="false"/>
+
+                <EditText
+                    android:id="@+id/etLongitud"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Longitud"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="4dp"
+                    android:enabled="false"/>
+            </LinearLayout>
+
+            <!-- Sexta fila: ID Propietario + Tiene Contrato -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:paddingTop="4dp">
+
+                <EditText
+                    android:id="@+id/etIdPropietario"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="ID Propietario"
+                    android:inputType="number"
+                    android:paddingEnd="4dp"
+                    android:enabled="false"/>
+
+                <CheckBox
+                    android:id="@+id/cbContratoVigente"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Contrato vigente"
+                    android:paddingStart="4dp"
+                    android:enabled="false"/>
+            </LinearLayout>
+
+            <!-- Botón Editar / Actualizar -->
+            <Button
+                android:id="@+id/btnEditarActualizar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Editar"
+                android:layout_marginTop="16dp"/>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

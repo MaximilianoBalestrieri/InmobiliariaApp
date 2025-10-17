@@ -4,83 +4,134 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import com.tec.inmobiliariaapp.R;
-import com.tec.inmobiliariaapp.model.Inmueble;
-import com.bumptech.glide.Glide; // 💡 Importar Glide
+import android.widget.Toast;
 
-import java.text.NumberFormat;
-import java.util.Locale;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.bumptech.glide.Glide;
+import com.tec.inmobiliariaapp.R;
+import com.tec.inmobiliariaapp.databinding.FragmentDetalleInmuebleBinding;
+import com.tec.inmobiliariaapp.model.Inmueble;
 
 public class DetalleInmuebleFragment extends Fragment {
 
-    private static final String ARG_INMUEBLE = "arg_inmueble";
-    private Inmueble inmueble;
+    private FragmentDetalleInmuebleBinding binding;
+    private DetalleInmuebleViewModel viewModel;
+    private boolean editando = false;
 
-    // 🔹 Método para crear una nueva instancia del fragment con el inmueble como argumento
-    // El modelo Inmueble debe implementar Serializable
-    public static DetalleInmuebleFragment newInstance(Inmueble inmueble) {
-        DetalleInmuebleFragment fragment = new DetalleInmuebleFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_INMUEBLE, inmueble);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    // 🔹 Recuperamos el inmueble desde los argumentos
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        binding = FragmentDetalleInmuebleBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        // Inicializar ViewModel
+        viewModel = new ViewModelProvider(this).get(DetalleInmuebleViewModel.class);
+
+        // Recuperar Bundle de InmueblesFragment
         if (getArguments() != null) {
-            inmueble = (Inmueble) getArguments().getSerializable(ARG_INMUEBLE);
+            viewModel.recuperarInmueble(getArguments());
         }
+
+        // Observamos el inmueble
+        viewModel.getInmueble().observe(getViewLifecycleOwner(), new Observer<Inmueble>() {
+            @Override
+            public void onChanged(Inmueble inmueble) {
+                if (inmueble != null) {
+                    binding.etDireccion.setText(inmueble.getDireccion());
+                    binding.etPrecio.setText(String.valueOf(inmueble.getValor()));
+                    binding.etTipo.setText(inmueble.getTipo());
+                    binding.etUso.setText(inmueble.getUso());
+                    binding.tvDisponible.setText(inmueble.isDisponible() ? "DISPONIBLE" : "ALQUILADO");
+
+                    // Cargar imagen
+                    String urlImagen = inmueble.getImagen();
+                    if (urlImagen != null && !urlImagen.isEmpty()) {
+                        String fullUrl = "https://inmobiliariaulp-amb5hwfqaraweyga.canadacentral-01.azurewebsites.net" + urlImagen;
+                        Glide.with(requireContext())
+                                .load(fullUrl)
+                                .placeholder(R.drawable.ic_launcher_background)
+                                .into(binding.ivInmueble);
+                    }
+
+                    habilitarCampos(false);
+                }
+            }
+        });
+
+        // Observamos mensajes de éxito/error
+        viewModel.getMensaje().observe(getViewLifecycleOwner(), msg -> {
+            if (msg != null && !msg.isEmpty()) {
+                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+
+                // Si la actualización fue exitosa, volver a modo ver
+                if (msg.contains("actualizado correctamente")) {
+                    habilitarCampos(false);
+                    binding.btnEditarActualizar.setText("Editar");
+                    editando = false;
+                }
+            }
+        });
+
+        // Botón Editar / Actualizar
+        binding.btnEditarActualizar.setOnClickListener(v -> {
+            Inmueble inmueble = viewModel.getInmueble().getValue();
+            if (inmueble == null) return;
+
+            if (!editando) {
+                habilitarCampos(true);
+                binding.btnEditarActualizar.setText("Actualizar");
+                editando = true;
+            } else {
+                // Tomar datos de los EditText
+                String direccion = binding.etDireccion.getText().toString().trim();
+                String tipo = binding.etTipo.getText().toString().trim();
+                String uso = binding.etUso.getText().toString().trim();
+                String precioStr = binding.etPrecio.getText().toString().trim();
+
+                if (direccion.isEmpty() || tipo.isEmpty() || uso.isEmpty() || precioStr.isEmpty()) {
+                    Toast.makeText(getContext(), "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                double valor;
+                try {
+                    valor = Double.parseDouble(precioStr);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(getContext(), "Precio inválido", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Actualizar objeto Inmueble
+                inmueble.setDireccion(direccion);
+                inmueble.setTipo(tipo);
+                inmueble.setUso(uso);
+                inmueble.setValor(valor);
+
+                // Llamada al ViewModel para actualizar vía API
+                viewModel.actualizarInmueble(inmueble);
+
+                // No deshabilitamos campos ni cambiamos botón hasta recibir respuesta
+            }
+        });
+
+        return root;
+    }
+
+    private void habilitarCampos(boolean habilitar) {
+        binding.etDireccion.setEnabled(habilitar);
+        binding.etPrecio.setEnabled(habilitar);
+        binding.etTipo.setEnabled(habilitar);
+        binding.etUso.setEnabled(habilitar);
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_detalle_inmueble, container, false);
-
-        ImageView ivInmueble = view.findViewById(R.id.ivInmueble); // Asegúrate de que este ID exista
-        TextView tvDireccion = view.findViewById(R.id.tvDireccion);
-        TextView tvPrecio = view.findViewById(R.id.tvPrecio);
-        TextView tvAmbientes = view.findViewById(R.id.tvAmbientes);
-        TextView tvUso = view.findViewById(R.id.tvUso);
-        TextView tvTipo = view.findViewById(R.id.tvTipo);
-        TextView tvDisponible = view.findViewById(R.id.tvDisponible);
-        TextView tvSuperficie = view.findViewById(R.id.tvSuperficie); // 💡 Agregamos Superficie
-
-        if (inmueble != null) {
-
-            // 💡 CORRECCIÓN 1: Carga de Imagen por URL usando Glide
-            String urlImagen = inmueble.getImagen(); // El modelo ya tiene getImagen() que devuelve la URL
-            if (urlImagen != null && !urlImagen.isEmpty()) {
-                Glide.with(this) // Usamos 'this' para el fragment context
-                        .load(urlImagen)
-                        .placeholder(R.drawable.casa1) // 💡 Placeholder (usa un drawable que tengas)
-                        .error(R.drawable.error_image) // 💡 Error image (si tienes)
-                        .into(ivInmueble);
-            } else {
-                ivInmueble.setImageResource(R.drawable.casa1); // Imagen por defecto si no hay URL
-            }
-
-            // 💡 CORRECCIÓN 2: Formato de Precio
-            NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("es", "AR"));
-            String precioFormateado = format.format(inmueble.getValor());
-
-            tvDireccion.setText("Dirección: " + inmueble.getDireccion());
-            tvPrecio.setText("Precio: " + precioFormateado);
-            tvAmbientes.setText("Ambientes: " + inmueble.getAmbientes());
-            tvUso.setText("Uso: " + inmueble.getUso());
-            tvTipo.setText("Tipo: " + inmueble.getTipo());
-            tvDisponible.setText("Disponible: " + (inmueble.isDisponible() ? "Sí" : "No"));
-            tvSuperficie.setText("Superficie: " + inmueble.getSuperficie() + " m²"); // 💡 Mostrar Superficie
-        }
-
-        return view;
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

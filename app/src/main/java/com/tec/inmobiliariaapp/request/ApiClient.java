@@ -27,6 +27,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 public class ApiClient {
     private static final String BASE_URL = "https://inmobiliariaulp-amb5hwfqaraweyga.canadacentral-01.azurewebsites.net/";
@@ -44,12 +45,11 @@ public class ApiClient {
 
     public interface InmoServicio {
 
-
         @FormUrlEncoded
         @POST("api/Propietarios/Login")
         Call<String> loginForm(
-                @Field("Usuario") String usuario, // Mayúsculas
-                @Field("Clave") String clave      // Mayúsculas
+                @Field("Usuario") String usuario,
+                @Field("Clave") String clave
         );
 
         @GET("api/Propietarios")
@@ -61,18 +61,24 @@ public class ApiClient {
         @PUT("api/Propietarios/actualizar")
         Call<Propietario> actualizarPropietario(@Header("Authorization") String token, @Body Propietario propietario);
 
-
         @Multipart
-        @POST("api/Inmuebles/crear") //
+        @POST("api/Inmuebles/crear")
         Call<Inmueble> crearInmueble(
                 @Header("Authorization") String token,
-                @Part MultipartBody.Part imagenFile, // La imagen binaria
+                @Part MultipartBody.Part imagenFile,
                 @Part("direccion") RequestBody direccion,
                 @Part("valor") RequestBody valor,
                 @Part("ambientes") RequestBody ambientes,
                 @Part("uso") RequestBody uso,
                 @Part("tipo") RequestBody tipo
-                // Agrega aquí todas las demás propiedades del inmueble que debas enviar
+        );
+
+        // ✅ NUEVO ENDPOINT SIMULADO PARA ACTUALIZAR INMUEBLE
+        @PUT("api/Inmuebles/actualizar/{id}")
+        Call<Inmueble> actualizarInmueble(
+                @Header("Authorization") String token,
+                @Path("id") int id,
+                @Body Inmueble inmueble
         );
     }
 

@@ -73,9 +73,6 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
                     .placeholder(R.drawable.ic_launcher_background)
                     .into(holder.ivInmueble);
 
-            // IMPORTANTE: Se eliminó la línea "holder.ivInmueble.setImageResource(R.drawable.ic_launcher_background);"
-            // que sobrescribía el resultado de Glide.
-
         } else {
             holder.ivInmueble.setImageResource(R.drawable.ic_launcher_background);
         }
@@ -88,9 +85,7 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
         return inmuebles.size();
     }
 
-    /**
-     * MÉTODO CRÍTICO para MVVM: Actualiza la lista con datos del LiveData.
-     */
+
     public void actualizarLista(List<Inmueble> nuevaLista) {
         this.inmuebles = nuevaLista;
         notifyDataSetChanged();
@@ -103,6 +98,7 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
             ivInmueble = itemView.findViewById(R.id.ivInmuebleItem);
             tvDireccion = itemView.findViewById(R.id.tvDireccionItem);
             tvPrecio = itemView.findViewById(R.id.tvPrecioItem);
