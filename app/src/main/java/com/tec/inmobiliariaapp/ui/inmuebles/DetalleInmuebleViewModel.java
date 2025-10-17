@@ -1,16 +1,21 @@
 package com.tec.inmobiliariaapp.ui.inmuebles;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.gson.Gson;
 import com.tec.inmobiliariaapp.model.Inmueble;
 import com.tec.inmobiliariaapp.request.ApiClient;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,27 +49,45 @@ public class DetalleInmuebleViewModel extends AndroidViewModel {
 
     // Método para actualizar un inmueble via API
     public void actualizarInmueble(Inmueble inmueble) {
-        ApiClient.InmoServicio api = ApiClient.getInmoServicio();
-        String token = ApiClient.leerToken(getApplication()); // Recupera el token guardado
+        Context context = getApplication().getApplicationContext();
+        String token = ApiClient.leerToken(context); //
 
-        // Llamada al endpoint de actualizar inmueble (supongamos que es tipo PUT)
-        Call<Inmueble> call = api.actualizarInmueble(token, inmueble.getIdInmueble(), inmueble);
-        call.enqueue(new Callback<Inmueble>() {
+        if (token == null || token.isEmpty()) {
+            mensajeMutable.setValue("Token no encontrado ");
+            return;
+        }
+
+        ApiClient.InmoServicio api = ApiClient.getInmoServicio();
+        Call<ResponseBody> call = api.actualizarInmueble("Bearer " + token, inmueble.getIdInmueble(), inmueble);
+        Log.d("API_JSON", new Gson().toJson(inmueble));
+
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    // Actualizamos el LiveData con la info nueva
-                    inmuebleMutable.setValue(response.body());
-                    mensajeMutable.setValue("Inmueble actualizado correctamente");
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    mensajeMutable.setValue("Inmueble actualizado correctamente ️");
+                    Log.e("API_SUCCESS", "Actualización exitosa");
                 } else {
-                    mensajeMutable.setValue("Error al actualizar: " + response.message());
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Error desconocido";
+                        Log.e("API_ERROR", "Código: " + response.code() + " - " + errorBody);
+                        mensajeMutable.setValue("Error al actualizar (" + response.code() + ")");
+                    } catch (Exception e) {
+                        Log.e("API_ERROR", "Error al leer el cuerpo de error: " + e.getMessage());
+                        mensajeMutable.setValue("Error inesperado al procesar la respuesta");
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<Inmueble> call, Throwable t) {
-                mensajeMutable.setValue("Fallo de conexión: " + t.getMessage());
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("API_ERROR", "Fallo la conexión: " + t.getMessage());
+                mensajeMutable.setValue("No se pudo conectar con el servidor");
             }
         });
+
+
     }
+
 }
+

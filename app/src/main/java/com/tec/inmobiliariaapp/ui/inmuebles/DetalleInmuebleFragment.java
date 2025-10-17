@@ -29,26 +29,17 @@ public class DetalleInmuebleFragment extends Fragment {
         binding = FragmentDetalleInmuebleBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Inicializar ViewModel
         viewModel = new ViewModelProvider(this).get(DetalleInmuebleViewModel.class);
 
-        // Recuperar Bundle de InmueblesFragment
         if (getArguments() != null) {
             viewModel.recuperarInmueble(getArguments());
         }
 
-        // Observamos el inmueble
         viewModel.getInmueble().observe(getViewLifecycleOwner(), new Observer<Inmueble>() {
             @Override
             public void onChanged(Inmueble inmueble) {
                 if (inmueble != null) {
-                    binding.etDireccion.setText(inmueble.getDireccion());
-                    binding.etPrecio.setText(String.valueOf(inmueble.getValor()));
-                    binding.etTipo.setText(inmueble.getTipo());
-                    binding.etUso.setText(inmueble.getUso());
-                    binding.tvDisponible.setText(inmueble.isDisponible() ? "DISPONIBLE" : "ALQUILADO");
-
-                    // Cargar imagen
+                    // Imagen
                     String urlImagen = inmueble.getImagen();
                     if (urlImagen != null && !urlImagen.isEmpty()) {
                         String fullUrl = "https://inmobiliariaulp-amb5hwfqaraweyga.canadacentral-01.azurewebsites.net" + urlImagen;
@@ -58,26 +49,30 @@ public class DetalleInmuebleFragment extends Fragment {
                                 .into(binding.ivInmueble);
                     }
 
+                    // Llenamos todos los campos
+                    binding.etDireccion.setText(inmueble.getDireccion());
+                    binding.etPrecio.setText(String.valueOf(inmueble.getValor()));
+                    binding.etAmbientes.setText(String.valueOf(inmueble.getAmbientes()));
+                    binding.etSuperficie.setText(String.valueOf(inmueble.getSuperficie()));
+                    binding.etUso.setText(inmueble.getUso());
+                    binding.etTipo.setText(inmueble.getTipo());
+                    binding.cbDisponible.setChecked(inmueble.isDisponible());
+                    binding.etLatitud.setText(String.valueOf(inmueble.getLatitud()));
+                    binding.etLongitud.setText(String.valueOf(inmueble.getLongitud()));
+                    binding.etIdPropietario.setText(String.valueOf(inmueble.getIdPropietario()));
+                    binding.cbContratoVigente.setChecked(inmueble.isTieneContratoVigente());
+
                     habilitarCampos(false);
                 }
             }
         });
 
-        // Observamos mensajes de éxito/error
         viewModel.getMensaje().observe(getViewLifecycleOwner(), msg -> {
             if (msg != null && !msg.isEmpty()) {
                 Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-
-                // Si la actualización fue exitosa, volver a modo ver
-                if (msg.contains("actualizado correctamente")) {
-                    habilitarCampos(false);
-                    binding.btnEditarActualizar.setText("Editar");
-                    editando = false;
-                }
             }
         });
 
-        // Botón Editar / Actualizar
         binding.btnEditarActualizar.setOnClickListener(v -> {
             Inmueble inmueble = viewModel.getInmueble().getValue();
             if (inmueble == null) return;
@@ -87,35 +82,27 @@ public class DetalleInmuebleFragment extends Fragment {
                 binding.btnEditarActualizar.setText("Actualizar");
                 editando = true;
             } else {
-                // Tomar datos de los EditText
-                String direccion = binding.etDireccion.getText().toString().trim();
-                String tipo = binding.etTipo.getText().toString().trim();
-                String uso = binding.etUso.getText().toString().trim();
-                String precioStr = binding.etPrecio.getText().toString().trim();
+                // Actualizamos objeto con valores de EditTexts y CheckBoxes
+                inmueble.setDireccion(binding.etDireccion.getText().toString());
+                inmueble.setTipo(binding.etTipo.getText().toString());
+                inmueble.setUso(binding.etUso.getText().toString());
+                inmueble.setDisponible(binding.cbDisponible.isChecked());
+                inmueble.setTieneContratoVigente(binding.cbContratoVigente.isChecked());
 
-                if (direccion.isEmpty() || tipo.isEmpty() || uso.isEmpty() || precioStr.isEmpty()) {
-                    Toast.makeText(getContext(), "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                inmueble.setValor(parseDoubleOrZero(binding.etPrecio.getText().toString()));
+                inmueble.setAmbientes(parseIntOrZero(binding.etAmbientes.getText().toString()));
+                inmueble.setSuperficie(Integer.parseInt(binding.etSuperficie.getText().toString()));
 
-                double valor;
-                try {
-                    valor = Double.parseDouble(precioStr);
-                } catch (NumberFormatException e) {
-                    Toast.makeText(getContext(), "Precio inválido", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                inmueble.setLatitud(parseDoubleOrZero(binding.etLatitud.getText().toString()));
+                inmueble.setLongitud(parseDoubleOrZero(binding.etLongitud.getText().toString()));
+                inmueble.setIdPropietario(parseIntOrZero(binding.etIdPropietario.getText().toString()));
 
-                // Actualizar objeto Inmueble
-                inmueble.setDireccion(direccion);
-                inmueble.setTipo(tipo);
-                inmueble.setUso(uso);
-                inmueble.setValor(valor);
-
-                // Llamada al ViewModel para actualizar vía API
+                // Enviar a API
                 viewModel.actualizarInmueble(inmueble);
 
-                // No deshabilitamos campos ni cambiamos botón hasta recibir respuesta
+                habilitarCampos(false);
+                binding.btnEditarActualizar.setText("Editar");
+                editando = false;
             }
         });
 
@@ -125,8 +112,31 @@ public class DetalleInmuebleFragment extends Fragment {
     private void habilitarCampos(boolean habilitar) {
         binding.etDireccion.setEnabled(habilitar);
         binding.etPrecio.setEnabled(habilitar);
-        binding.etTipo.setEnabled(habilitar);
+        binding.etAmbientes.setEnabled(habilitar);
+        binding.etSuperficie.setEnabled(habilitar);
         binding.etUso.setEnabled(habilitar);
+        binding.etTipo.setEnabled(habilitar);
+        binding.cbDisponible.setEnabled(habilitar);
+        binding.etLatitud.setEnabled(habilitar);
+        binding.etLongitud.setEnabled(habilitar);
+        binding.etIdPropietario.setEnabled(habilitar);
+        binding.cbContratoVigente.setEnabled(habilitar);
+    }
+
+    private double parseDoubleOrZero(String value) {
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private int parseIntOrZero(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     @Override

@@ -13,6 +13,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -35,6 +36,16 @@ public class ApiClient {
 
     public static InmoServicio getInmoServicio(){
         Gson gson= new GsonBuilder().setLenient().create();
+
+
+        // Interceptor para mostrar logs en Logcat
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build();
+
         Retrofit retrofit= new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -73,16 +84,17 @@ public class ApiClient {
                 @Part("tipo") RequestBody tipo
         );
 
-        // ✅ NUEVO ENDPOINT SIMULADO PARA ACTUALIZAR INMUEBLE
         @PUT("api/Inmuebles/actualizar/{id}")
-        Call<Inmueble> actualizarInmueble(
+        Call<ResponseBody> actualizarInmueble(
                 @Header("Authorization") String token,
                 @Path("id") int id,
                 @Body Inmueble inmueble
         );
+
+
     }
 
-    public static void guardarToken(Context context, String token) {
+        public static void guardarToken(Context context, String token) {
         SharedPreferences sp = context.getSharedPreferences("token.xml", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("token", token);

@@ -51,7 +51,7 @@ public class borrarDetalleInmuebleFragment extends Fragment {
         TextView tvAmbientes = view.findViewById(R.id.etAmbientes);
         TextView tvUso = view.findViewById(R.id.etUso);
         TextView tvTipo = view.findViewById(R.id.etTipo);
-        TextView tvDisponible = view.findViewById(R.id.tvDisponible);
+        TextView tvDisponible = view.findViewById(R.id.cbDisponible);
         TextView tvSuperficie = view.findViewById(R.id.etSuperficie); // 💡 Agregamos Superficie
 
         if (inmueble != null) {

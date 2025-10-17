@@ -1,5 +1,7 @@
 package com.tec.inmobiliariaapp.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 
 public class Inmueble implements Serializable {
@@ -15,7 +17,9 @@ public class Inmueble implements Serializable {
     private Boolean disponible;
     private double longitud;
     private int idPropietario;
-    private Propietario duenio;
+    @Expose(serialize = false)
+    private transient Propietario duenio;
+
     private boolean tieneContratoVigente;
     private Contrato contrato;
 
