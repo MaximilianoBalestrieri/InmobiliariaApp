@@ -10,21 +10,21 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.tec.inmobiliariaapp.databinding.FragmentHomeBinding;
+import com.tec.inmobiliariaapp.databinding.FragmentInicioBinding;
 
 public class InicioFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentInicioBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         InicioViewModel inicioViewModel =
                 new ViewModelProvider(this).get(InicioViewModel.class);
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        binding = FragmentInicioBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
+        final TextView textView = binding.tvMapa;
         inicioViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
