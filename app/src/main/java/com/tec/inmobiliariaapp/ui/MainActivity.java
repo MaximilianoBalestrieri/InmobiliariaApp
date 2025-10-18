@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private static final int CONTAINER_ID = R.id.fragment_container;
+
+    // Al usar navegación manual con un contenedor de fragments,
+    // la variable `pendingFragment` ya no es necesaria con el nuevo enfoque.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
-        // Toolbar
+        // ... Configuración de Toolbar, Toggle y Header (sin cambios) ...
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -45,31 +50,25 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Header con nombre del usuario
         View headerView = navigationView.getHeaderView(0);
         TextView tvNombre = headerView.findViewById(R.id.tvUsuarioLogueado);
-        // 1. Leer SharedPreferences
         SharedPreferences prefs = this.getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
-
-        // 2. Obtener el email guardado con la clave "email"
         String emailUsuario = prefs.getString("email", "Usuario Invitado");
 
-        // 3. Actualizar la vista
         if (tvNombre != null) {
             tvNombre.setText("Usuario: " + emailUsuario);
         }
+        // ... Fin de configuración ...
 
         // Fragment inicial
-        loadFragment(new InicioFragment(), "Inicio");
+        if (savedInstanceState == null) {
+            loadFragment(new InicioFragment(), "Inicio");
+        }
 
-        // FloatingActionButton
+        // FloatingActionButton (sin cambios)
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            // Aquí podés abrir el fragment para agregar inmueble
-            getSupportFragmentManager().beginTransaction()
-                   // .replace(R.id.fragment_container, new InmueblesFragment())
-                    .addToBackStack(null)
-                    .commit();
+            // tryLoadFragment(new AlgúnFragmento(), "Título");
         });
 
         // Listener del menú lateral
@@ -85,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentToLoad = new PerfilFragment();
                 title = "Perfil";
             } else if (id == R.id.nav_inmuebles) {
-               fragmentToLoad = new InmueblesFragment();
+                fragmentToLoad = new InmueblesFragment();
                 title = "Inmuebles";
             } else if (id == R.id.nav_contratos) {
                 fragmentToLoad = new ContratosFragment();
@@ -100,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (fragmentToLoad != null) {
-                loadFragment(fragmentToLoad, title);
+                // LLAMADA CLAVE: Usamos el método unificado para la carga segura
+                loadFragmentWithCleanup(fragmentToLoad, title);
             }
 
             drawerLayout.closeDrawers();
@@ -108,11 +108,38 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Nuevo método de carga que fuerza la limpieza del fragmento anterior.
+     * Esto es esencial cuando el fragmento anterior contiene un SupportMapFragment.
+     */
+    private void loadFragmentWithCleanup(Fragment nextFragment, String title) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // 1. Obtener el fragmento actualmente visible
+        Fragment currentFragment = fragmentManager.findFragmentById(CONTAINER_ID);
+
+        // 2. Si el fragmento actual es el mapa, necesitamos REMOVERLO explícitamente.
+        // Un simple 'replace' a veces no es suficiente para que el mapa libere la GPU.
+        if (currentFragment instanceof InicioFragment) {
+            // Remover el InicioFragment (que contiene el mapa)
+            fragmentManager.beginTransaction()
+                    .remove(currentFragment)
+                    .commitNow(); // commitNow() garantiza que el removal se complete antes de la siguiente carga
+
+            // El mapa interno del SupportMapFragment se destruirá en este proceso.
+        }
+
+        // 3. Cargar el nuevo fragmento
+        loadFragment(nextFragment, title);
+    }
+
+    // Método de carga real
     private void loadFragment(Fragment fragment, String title) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+                .replace(CONTAINER_ID, fragment)
+                .commitAllowingStateLoss(); // commitAllowingStateLoss es válido en este contexto
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }

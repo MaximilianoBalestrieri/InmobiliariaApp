@@ -66,7 +66,7 @@ public class InmuebleAdapter extends RecyclerView.Adapter<InmuebleAdapter.ViewHo
         String urlImagen = inmueble.getImagen();
         if (urlImagen != null && !urlImagen.isEmpty()) {
             // URL Base de la API + path de la imagen
-            String fullUrl = "https://inmobiliariaulp-amb5hwfqaraweyga.canadacentral-01.azurewebsites.net" + urlImagen;
+            String fullUrl = "https://inmobiliariaulp-amb5hwfqaraweyga.canadacentral-01.azurewebsites.net/" + urlImagen;
 
             Glide.with(holder.ivInmueble.getContext())
                     .load(fullUrl)

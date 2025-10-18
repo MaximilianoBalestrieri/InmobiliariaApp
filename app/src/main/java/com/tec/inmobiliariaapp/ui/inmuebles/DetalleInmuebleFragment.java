@@ -42,7 +42,7 @@ public class DetalleInmuebleFragment extends Fragment {
                     // Imagen
                     String urlImagen = inmueble.getImagen();
                     if (urlImagen != null && !urlImagen.isEmpty()) {
-                        String fullUrl = "https://inmobiliariaulp-amb5hwfqaraweyga.canadacentral-01.azurewebsites.net" + urlImagen;
+                        String fullUrl = "https://inmobiliariaulp-amb5hwfqaraweyga.canadacentral-01.azurewebsites.net/" + urlImagen;
                         Glide.with(requireContext())
                                 .load(fullUrl)
                                 .placeholder(R.drawable.ic_launcher_background)
