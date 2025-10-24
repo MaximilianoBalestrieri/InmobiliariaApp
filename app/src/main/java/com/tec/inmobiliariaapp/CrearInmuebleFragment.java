@@ -79,7 +79,7 @@ public class CrearInmuebleFragment extends Fragment {
         String ambientes= binding.etAmbientes.getText().toString();
         boolean disponible=binding.cbDisponible.isChecked();
         String superficie=binding.etSuperficie.getText().toString();
-
+        mViewModel.guardarInmueble(direccion, uso, tipo, precio, ambientes, superficie, disponible);
     }
     private void abrirGaleria() {
         intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

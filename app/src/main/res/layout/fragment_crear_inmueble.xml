@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="38dp"
                 android:background="@null"
-                android:enabled="false"
+                android:enabled="true"
                 android:hint="Superficie"
                 android:inputType="numberDecimal"
                 android:paddingBottom="2dp" />
@@ -99,14 +99,14 @@
                 android:id="@+id/cbContratoVigente"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:enabled="false"
+                android:enabled="true"
                 android:text="Contrato Vigente" />
             <CheckBox
                 android:id="@+id/cbDisponible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Disponible"
-                android:enabled="false"/>
+                android:enabled="true"/>
 
             <Button
                 android:id="@+id/btnGuardarInmueble"

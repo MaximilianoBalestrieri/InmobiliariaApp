@@ -17,11 +17,20 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.gson.Gson;
 import com.tec.inmobiliariaapp.model.Inmueble;
+import com.tec.inmobiliariaapp.request.ApiClient;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CrearInmuebleViewModel extends AndroidViewModel {
     private MutableLiveData<Uri> uriMutableLiveData;
@@ -71,8 +80,35 @@ public class CrearInmuebleViewModel extends AndroidViewModel {
             inmueble.setSuperficie(superf);
             inmueble.setAmbientes(amb);
             inmueble.setDisponible(disponible);
-
             // convertir la imagen en bits
+            byte[] imagen=transformarImagen();
+            if (imagen.length == 0){
+                Toast.makeText(getApplication(), "Ustes debe ingresar una imagen", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String inmuebleJson = new Gson().toJson(inmueble);
+            RequestBody inmuebleBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), inmuebleJson);
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), imagen);
+            MultipartBody.Part imagenPart = MultipartBody.Part.createFormData("imagen", "imagen.jpg", requestFile);
+            ApiClient.InmoServicio api = ApiClient.getInmoServicio();
+            String token=ApiClient.leerToken(getApplication());
+            Call<Inmueble> llamada=api.CargarInmueble("Bearer " + token, imagenPart, inmuebleBody);
+            llamada.enqueue(new Callback<Inmueble>() {
+                @Override
+                public void onResponse(Call<Inmueble> call, Response<Inmueble> response) {
+                    if (response.isSuccessful()){
+                        Toast.makeText(getApplication(), "Inmueble guardado correctamente", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Inmueble> call, Throwable throwable) {
+                    Toast.makeText(getApplication(), "Error al guardar inmueble", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+
         } catch (NumberFormatException e) {
             Toast.makeText(getApplication(), "Error, debe ingresar un numero", Toast.LENGTH_SHORT).show();
 
