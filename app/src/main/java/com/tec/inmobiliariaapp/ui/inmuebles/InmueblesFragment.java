@@ -1,5 +1,6 @@
 package com.tec.inmobiliariaapp.ui.inmuebles;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.tec.inmobiliariaapp.CrearInmuebleFragment;
+import com.tec.inmobiliariaapp.R;
 import com.tec.inmobiliariaapp.databinding.FragmentInmueblesBinding;
 import com.tec.inmobiliariaapp.model.Inmueble;
 
@@ -33,6 +37,24 @@ public class InmueblesFragment extends Fragment {
         // Configurar el RecyclerView con un GridLayoutManager de 2 columnas
         GridLayoutManager glm = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
         binding.recyclerInmuebles.setLayoutManager(glm);
+        binding.fabAgregarInmueble.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+   //     Navigation.findNavController((Activity)getContext(), R.id.nav_host_fragment_content_main).navigate(R.id.crearInmuebleFragment);
+
+        CrearInmuebleFragment crearInmuebleFragment = new CrearInmuebleFragment();
+        //detalleFragment.setArguments(bundle);
+
+        // para navegar fragment actual por el de Crear Inmueble
+        getParentFragmentManager().beginTransaction()
+                .replace(com.tec.inmobiliariaapp.R.id.fragment_container, crearInmuebleFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+
+
+});
 
         // Observar la lista de inmuebles desde el ViewModel
         vm.getlistaInmuebles().observe(getViewLifecycleOwner(), new Observer<List<Inmueble>>() {

@@ -73,16 +73,10 @@ public class ApiClient {
         Call<Propietario> actualizarPropietario(@Header("Authorization") String token, @Body Propietario propietario);
 
         @Multipart
-        @POST("api/Inmuebles/crear")
-        Call<Inmueble> crearInmueble(
-                @Header("Authorization") String token,
-                @Part MultipartBody.Part imagenFile,
-                @Part("direccion") RequestBody direccion,
-                @Part("valor") RequestBody valor,
-                @Part("ambientes") RequestBody ambientes,
-                @Part("uso") RequestBody uso,
-                @Part("tipo") RequestBody tipo
-        );
+        @POST("api/Inmuebles/cargar")
+        Call<Inmueble> CargarInmueble(@Header("Authorization") String token,
+                                      @Part MultipartBody.Part imagen,
+                                      @Part("inmueble") RequestBody inmuebleBody);
 
         @PUT("api/Inmuebles/actualizar/{id}")
         Call<ResponseBody> actualizarInmueble(

@@ -5,10 +5,12 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,41 +34,51 @@ public class CrearInmuebleFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+
       //  return inflater.inflate(R.layout.fragment_crear_inmueble, container, false);
         binding = FragmentCrearInmuebleBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(CrearInmuebleViewModel.class);
         // TODO: Use the ViewModel
         abrirGaleria();
-binding.btnSeleccionarFoto.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        arl.launch(intent);
-    }
-});
+        binding.btnSeleccionarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                arl.launch(intent);
+            }
+        });
 
-binding.btnGuardarInmueble.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
+        binding.btnGuardarInmueble.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cargarInmueble();
+            }
+        });
+    mViewModel.getUriMutable().observe(getViewLifecycleOwner(), new Observer<Uri>() {
+        @Override
+        public void onChanged(Uri uri) {
+            binding.ivFotoInmueble.setImageURI(uri);
 
+        }
+    });
+        return binding.getRoot();
     }
-});
 
-    }
+
+
+
 
     private void cargarInmueble(){
         String direccion=binding.etDireccion.getText().toString();
         String uso=binding.etUso.getText().toString();
         String tipo=binding.etTipo.getText().toString();
-        float latitud=0;
-        float longitud=0;
-        float precio=Float.parseFloat(binding.etPrecio.getText().toString());
-        int ambientes= Integer.parseInt(binding.etAmbientes.getText().toString());
+        double latitud=0;
+        double longitud=0;
+        String precio=binding.etPrecio.getText().toString();
+        String ambientes= binding.etAmbientes.getText().toString();
+        boolean disponible=binding.cbDisponible.isChecked();
+        String superficie=binding.etSuperficie.getText().toString();
 
     }
     private void abrirGaleria() {
