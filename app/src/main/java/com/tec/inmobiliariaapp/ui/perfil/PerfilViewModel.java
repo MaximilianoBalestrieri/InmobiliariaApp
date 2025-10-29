@@ -99,7 +99,32 @@ public class PerfilViewModel extends AndroidViewModel {
                 Toast.makeText(getApplication(), "No hay datos de propietario para actualizar.", Toast.LENGTH_SHORT).show();
                 return;
             }
+// ===== VALIDACIONES =====
+            if (nombre.trim().isEmpty() || apellido.trim().isEmpty() || dni.trim().isEmpty()
+                    || telefono.trim().isEmpty() || email.trim().isEmpty()) {
+                Toast.makeText(getApplication(), "Todos los campos son obligatorios.", Toast.LENGTH_SHORT).show();
+                mEstado.setValue(true);
+                mNombreBoton.setValue("GUARDAR");
+                return;
+            }
 
+            // Validar DNI como número entero
+            try {
+                Integer.parseInt(dni);
+            } catch (NumberFormatException e) {
+                Toast.makeText(getApplication(), "El DNI debe ser un número válido.", Toast.LENGTH_SHORT).show();
+                mEstado.setValue(true);
+                mNombreBoton.setValue("GUARDAR");
+                return;
+            }
+
+            // Validar formato de correo electrónico
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(getApplication(), "El correo electrónico no tiene un formato válido.", Toast.LENGTH_SHORT).show();
+                mEstado.setValue(true);
+                mNombreBoton.setValue("GUARDAR");
+                return;
+            }
 
             Propietario actualizado = new Propietario();
             // Mantenemos el ID original

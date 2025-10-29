@@ -37,33 +37,38 @@
                 android:id="@+id/etDireccion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Dirección" />
+                android:hint="Dirección"
+                android:textColor="@color/black" />
 
             <EditText
                 android:id="@+id/etPrecio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Precio"
                 android:inputType="numberDecimal"
-                android:hint="Precio" />
+                android:textColor="@color/black" />
 
             <EditText
                 android:id="@+id/etAmbientes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Ambientes"
                 android:inputType="number"
-                android:hint="Ambientes" />
+                android:textColor="@color/black" />
 
             <EditText
                 android:id="@+id/etUso"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Uso (Ej: Residencial)" />
+                android:hint="Uso (Ej: Residencial)"
+                android:textColor="@color/black" />
 
             <EditText
                 android:id="@+id/etTipo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tipo (Ej: Casa, Dpto...)" />
+                android:hint="Tipo (Ej: Casa, Dpto...)"
+                android:textColor="@color/black" />
 
             <EditText
                 android:id="@+id/etLatitud"
@@ -93,20 +98,34 @@
                 android:enabled="true"
                 android:hint="Superficie"
                 android:inputType="numberDecimal"
-                android:paddingBottom="2dp" />
+                android:paddingBottom="2dp"
+                android:textColor="@color/black" />
 
-            <CheckBox
-                android:id="@+id/cbContratoVigente"
-                android:layout_width="wrap_content"
+            <!-- Contenedor horizontal para los CheckBox -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="true"
-                android:text="Contrato Vigente" />
-            <CheckBox
-                android:id="@+id/cbDisponible"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Disponible"
-                android:enabled="true"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+
+                <CheckBox
+                    android:id="@+id/cbContratoVigente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contrato Vigente"
+                    android:enabled="true"
+                    android:layout_marginEnd="24dp" />
+
+                <CheckBox
+                    android:id="@+id/cbDisponible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disponible"
+                    android:enabled="true" />
+            </LinearLayout>
+
 
             <Button
                 android:id="@+id/btnGuardarInmueble"
