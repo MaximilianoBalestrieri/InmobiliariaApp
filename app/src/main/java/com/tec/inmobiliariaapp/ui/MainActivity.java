@@ -20,7 +20,7 @@ import com.tec.inmobiliariaapp.R;
 import com.tec.inmobiliariaapp.ui.contratos.ContratosFragment;
 import com.tec.inmobiliariaapp.ui.inicio.InicioFragment;
 import com.tec.inmobiliariaapp.ui.inmuebles.InmueblesFragment;
-import com.tec.inmobiliariaapp.ui.inquilino.InquilinoFragment;
+import com.tec.inmobiliariaapp.ui.inquilinos.InquilinosFragment;
 import com.tec.inmobiliariaapp.ui.login.LoginActivity;
 import com.tec.inmobiliariaapp.ui.perfil.PerfilFragment;
 
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentToLoad = new ContratosFragment();
                 title = "Contratos";
             } else if (id == R.id.nav_inquilinos) {
-                fragmentToLoad = new InquilinoFragment();
+                fragmentToLoad = new InquilinosFragment();
                 title = "Inquilinos";
             } else if (id == R.id.nav_logout) {
                 mostrarDialogoLogout();
@@ -119,10 +119,7 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawers();
         }
     }
-    /**
-     * Nuevo método de carga que fuerza la limpieza del fragmento anterior.
-     * Esto es esencial cuando el fragmento anterior contiene un SupportMapFragment.
-     */
+
     private void loadFragmentWithCleanup(Fragment nextFragment, String title) {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
