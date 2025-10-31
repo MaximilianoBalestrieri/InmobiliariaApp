@@ -108,6 +108,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Método público para cargar un fragmento con Bundle (llamado desde ContratosFragment)
+    public void navigateToFragment(Fragment fragment, String title, Bundle args) {
+        // 1. Asignar los argumentos al fragmento
+        fragment.setArguments(args);
+        // 2. Usar tu método de carga existente
+        loadFragment(fragment, title);
+        // 3. Opcional: Cerrar el Drawer si está abierto
+        if (drawerLayout.isDrawerOpen(navigationView)) {
+            drawerLayout.closeDrawers();
+        }
+    }
     /**
      * Nuevo método de carga que fuerza la limpieza del fragmento anterior.
      * Esto es esencial cuando el fragmento anterior contiene un SupportMapFragment.

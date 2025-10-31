@@ -10,7 +10,6 @@
         android:name="com.tec.inmobiliariaapp.ui.inmuebles.InmueblesFragment"
         android:label="Inmuebles"
         tools:layout="@layout/fragment_inmuebles">
-
         <action
             android:id="@+id/action_inmueblesFragment_to_agregarInmuebleFragment"
             app:destination="@id/agregarInmuebleFragment" />
@@ -21,4 +20,29 @@
         android:name="com.tec.inmobiliariaapp.ui.inmuebles.AgregarInmuebleFragment"
         android:label="Agregar Inmueble"
         tools:layout="@layout/fragment_agregar_inmueble" />
+
+    <fragment
+        android:id="@+id/contratosFragment"
+        android:name="com.tec.inmobiliariaapp.ui.contratos.ContratosFragment"
+        android:label="Contratos"
+        tools:layout="@layout/fragment_contratos">
+
+        <action
+            android:id="@+id/action_contratosFragment_to_pagosFragment"
+            app:destination="@id/pagosFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/pagosFragment"
+        android:name="com.tec.inmobiliariaapp.ui.pagos.PagosFragment"
+        android:label="Pagos"
+        tools:layout="@layout/fragment_pagos">
+
+        <argument
+            android:name="idContrato"
+            app:argType="integer" />
+
+    </fragment>
+
 </navigation>

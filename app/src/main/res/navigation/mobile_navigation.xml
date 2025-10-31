@@ -35,4 +35,14 @@
             android:id="@+id/action_crearInmuebleFragment_to_nav_slideshow"
             app:destination="@id/nav_slideshow" />
     </fragment>
+    <fragment
+        android:id="@+id/pagosFragment"
+        android:name="com.tec.inmobiliariaapp.ui.pagos.PagosFragment"
+        android:label="Pagos"
+        tools:layout="@layout/fragment_pagos" >
+        <argument
+            android:name="idContrato"
+            app:argType="integer" />
+    </fragment>
+
 </navigation>
