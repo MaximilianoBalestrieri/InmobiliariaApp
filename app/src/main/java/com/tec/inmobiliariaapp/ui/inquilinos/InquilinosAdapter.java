@@ -33,7 +33,7 @@ public class InquilinosAdapter extends RecyclerView.Adapter<InquilinosAdapter.In
         Log.d("InquilinosAdapter", "onBindViewHolder: " + inq.nombre + " " + inq.apellido);
         holder.tvNombreApellido.setText(inq.nombre + " " + inq.apellido);
         holder.tvDni.setText("DNI: " + inq.dni);
-        holder.tvTelefono.setText("TelÃ©fono: " + inq.telefono);
+        holder.tvTelefono.setText("Telefono: " + inq.telefono);
         holder.tvEmail.setText("Email: " + inq.email);
         holder.tvInmueble.setText("Inmueble: " + (inq.direccionInmueble != null ? inq.direccionInmueble : "Sin direcciÃ³n")); // AsegÃºrate de que 'inq' tenga la propiedad 'direccionInmueble'
     }

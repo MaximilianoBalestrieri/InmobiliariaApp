@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
                     // Permiso concedido, intentamos la llamada de nuevo
-                    vm.llamarInmobiliaria(NUMERO_INMOBILIARIA);
+                    vm.llamarInmobiliaria(NUMERO_INMOBILIARIA); // con el numero que se instanció antes.
                 } else {
                     Toast.makeText(this, "Permiso de llamada denegado.", Toast.LENGTH_LONG).show();
                 }
@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
 
         // **Observadores del ViewModel**
 
-        // 1. Observa mensajes de error/info
+
         vm.getMMensaje().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
             }
         });
 
-        // 2. Observa la solicitud de permiso de llamada (activada desde el ViewModel)
+        // **Observa la solicitud de permiso de llamada (activada desde el ViewModel)
         vm.getMSolicitarPermisoLlamada().observe(this, new Observer<Void>() {
             @Override
             public void onChanged(Void aVoid) {
@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements SensorEventListe
             }
         });
 
-        // 3. Observa la notificación de llamada iniciada
+        //  Observa la notificación de llamada iniciada
         vm.getMLlamadaIniciada().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean llamadaExitosa) {
