@@ -41,14 +41,15 @@ public class InquilinosViewModel extends AndroidViewModel {
 
     // obtengo las preferencias compartidas para acceder al token
     public void cargarInquilinos() {
-       // SharedPreferences sp = getApplication().getSharedPreferences("token_prefs", Context.MODE_PRIVATE);
+
         // obtengo el token guardado y lo preparo para la autenticacion
         String token = prefs.getString("token", ""); // Asumiendo que la clave es "token"
         String bearerToken = "Bearer " + token;
-
         Log.d("InquilinosViewModel", "Cargando Inquilinos con token: " + (token.isEmpty() ? "VACÍO" : "OK"));
+
         // hago la llamada a la api para obtener los inmuebles con contrato vigente
         apiService.contratoVigente(bearerToken).enqueue(new retrofit2.Callback<List<com.tec.inmobiliariaapp.model.Inmueble>>() {
+
             @Override
             // proceso la respuesta de la api
             public void onResponse(retrofit2.Call<List<com.tec.inmobiliariaapp.model.Inmueble>> call, retrofit2.Response<List<com.tec.inmobiliariaapp.model.Inmueble>> response) {
@@ -70,6 +71,7 @@ public class InquilinosViewModel extends AndroidViewModel {
                     for (com.tec.inmobiliariaapp.model.Inmueble i : lista) {
                         // hago la llamada a la api para obtener el contrato por inmueble
                         apiService.obtenerContratoPorInmueble(bearerToken, i.getIdInmueble()).enqueue(new retrofit2.Callback<com.tec.inmobiliariaapp.model.Contrato>() {
+
                             @Override
                             // proceso la respuesta del contrato
                             public void onResponse(retrofit2.Call<com.tec.inmobiliariaapp.model.Contrato> call, retrofit2.Response<com.tec.inmobiliariaapp.model.Contrato> response) {
