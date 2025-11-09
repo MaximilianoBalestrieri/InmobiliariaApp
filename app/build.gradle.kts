@@ -43,13 +43,7 @@ dependencies {
     implementation(libs.legacy.support.v4)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
-    // ----------------------------------------------------------------------
-    // Se recomienda estandarizar: o se usa libs. (del toml) o se usa la declaración directa.
-    // He eliminado las líneas redundantes/conflictivas que usaban libs.
-    // pero mantenido las que sí son necesarias para tu proyecto.
-    // ----------------------------------------------------------------------
 
-    // Dependencias de Testing (mantengo las que usas con libs.)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -58,7 +52,7 @@ dependencies {
     implementation ("androidx.appcompat:appcompat:1.7.1")
     implementation ("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation ("com.google.android.material:material:1.13.0")
-
+    implementation("com.google.code.gson:gson:2.10.1")
     // Dependencias de Architecture Components (Lifecycle)
     implementation ("androidx.lifecycle:lifecycle-viewmodel:2.9.4")
     implementation ("androidx.lifecycle:lifecycle-livedata:2.9.4")
@@ -68,9 +62,7 @@ dependencies {
     implementation ("androidx.navigation:navigation-fragment:2.9.5")
     implementation ("androidx.navigation:navigation-ui:2.9.5")
 
-    // Dependencias de Networking (Retrofit/OkHttp)
-    // Nota: Las versiones 3.x.x para Retrofit son inusuales. Las versiones estables son 2.x.x.
-    // Mantuve 3.0.0 pero revisa si querías decir 2.11.0 o similar.
+
     implementation ("com.squareup.retrofit2:retrofit:3.0.0")
     implementation ("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation ("com.squareup.okhttp3:okhttp:5.1.0")

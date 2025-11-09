@@ -16,9 +16,12 @@ import com.tec.inmobiliariaapp.R;
 import com.tec.inmobiliariaapp.model.Contrato;
 
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class ContratosAdapter extends RecyclerView.Adapter<ContratosAdapter.ViewHolder> {
-
+    // Dentro de la clase ContratosAdapter
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     // 1. Interfaz para comunicar el clic al Fragmento
     public interface OnContratoClickListener {
         void onPagosClick(int idContrato);
@@ -62,9 +65,12 @@ public class ContratosAdapter extends RecyclerView.Adapter<ContratosAdapter.View
 
             // Muestro los datos del contrato
             holder.tvContratoVigente.setText("Contrato Vigente: " + (contrato.estado ? "Sí" : "No"));
-            holder.tvFechaInicio.setText("Inicio: " + contrato.fechaInicio);
-            holder.tvFechaFin.setText("Fin: " + contrato.fechaFinalizacion);
-            holder.tvInquilino.setText("Inquilino: " + contrato.inquilino.nombre + " " + contrato.inquilino.apellido);
+
+            // ** PONGO EL FORMATO DD/MM/AAAA A PEDIDO DEL PROFESOR**
+            String fechaInicioFormateada = contrato.fechaInicio != null ? DATE_FORMAT.format(contrato.fechaInicio) : "N/D";
+            String fechaFinFormateada = contrato.fechaFinalizacion != null ? DATE_FORMAT.format(contrato.fechaFinalizacion) : "N/D";
+            holder.tvFechaInicio.setText("Inicio: " + fechaInicioFormateada);
+            holder.tvFechaFin.setText("Fin: " + fechaFinFormateada);            holder.tvInquilino.setText("Inquilino: " + contrato.inquilino.nombre + " " + contrato.inquilino.apellido);
 
             // Lógica de Imagen con Glide
             String urlImagen = contrato.inmueble.getImagen();

@@ -1,9 +1,11 @@
 package com.tec.inmobiliariaapp.model;
 
+import java.util.Date;
+
 public class Contrato {
     public int idContrato;
-    public String fechaInicio;
-    public String fechaFinalizacion;
+    public Date fechaInicio;
+    public Date fechaFinalizacion;
     public double montoAlquiler;
     public boolean estado;
     public int idInquilino;

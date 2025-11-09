@@ -1,8 +1,10 @@
 package com.tec.inmobiliariaapp.model;
 
+import java.util.Date;
+
 public class Pagos {
     public int idPago;
-    public String fechaPago;
+    public Date fechaPago;
     public double monto;
     public String detalle;
     public boolean estado;
@@ -10,7 +12,7 @@ public class Pagos {
     public Contrato contrato;
 
     // constructor que recibe todos los campos
-    public Pagos(int idPago, String fechaPago, double monto, String detalle, boolean estado, int idContrato, Contrato contrato) {
+    public Pagos(int idPago, Date fechaPago, double monto, String detalle, boolean estado, int idContrato, Contrato contrato) {
         this.idPago = idPago;
         this.fechaPago = fechaPago;
         this.monto = monto;

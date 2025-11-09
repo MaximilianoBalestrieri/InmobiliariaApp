@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tec.inmobiliariaapp.R;
 import com.tec.inmobiliariaapp.model.Pagos;
 import java.util.List;
-
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 public class PagosAdapter extends RecyclerView.Adapter<PagosAdapter.PagoViewHolder> {
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     private List<Pagos> pagosList;
 
     public PagosAdapter(List<Pagos> pagosList) {
@@ -31,7 +33,15 @@ public class PagosAdapter extends RecyclerView.Adapter<PagosAdapter.PagoViewHold
     @Override
     public void onBindViewHolder(@NonNull PagoViewHolder holder, int position) {
         Pagos pago = pagosList.get(position);
-        holder.tvFecha.setText("Fecha: " + pago.fechaPago);
+        // 2. pongo el formato DD/MM/AAAA a la fecha de pago
+        String fechaFormateada;
+        if (pago.fechaPago != null) {
+            fechaFormateada = DATE_FORMAT.format(pago.fechaPago);
+        } else {
+            fechaFormateada = "N/D"; // Manejar el caso nulo
+        }
+
+        holder.tvFecha.setText("Fecha: " + fechaFormateada);
         holder.tvMonto.setText("Monto: $" + pago.monto);
         holder.tvDetalle.setText("Detalle: " + pago.detalle);
         holder.tvEstado.setText("Estado: " + (pago.estado ? "Pagado" : "Pendiente"));
